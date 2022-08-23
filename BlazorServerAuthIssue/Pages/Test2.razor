@@ -1,0 +1,17 @@
+﻿@layout MainLayout
+@page "/test2"
+
+@inject NavigationManager _navManager
+
+<AuthorizeView>
+    <NotAuthorized>
+        <h3>Test 2 (Not Authorized)</h3>
+    </NotAuthorized>
+    <Authorized>
+        <h3>Test 2 (Authorized!!!!)</h3>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+
+}

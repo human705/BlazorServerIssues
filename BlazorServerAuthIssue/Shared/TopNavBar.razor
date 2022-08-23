@@ -1,0 +1,110 @@
+﻿@using Blazored.LocalStorage
+@using Serilog
+
+@inject ILocalStorageService _localStorageService;
+@inject NavigationManager _navManager;
+
+<nav class="navbar navbar-expand-md navbar-light bg-light mb-4">
+    <AuthorizeView>
+        <Authorized>
+
+            <div class="container-fluid">
+                <div class="navbar-brand">
+                    Nav Brand
+                </div>
+                <button class="navbar-toggler @NavButtonCssClass" type="button" aria-controls="navbarCollapse"
+                        aria-label="Toggle navigation" @onclick="ToggleNavMenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse @NavBarCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        @*                <li class="nav-item">
+                        <NavLink class="nav-link" href="./" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                        </NavLink>
+                        </li>*@
+@*                        <li class="nav-item">
+                            <NavLink class="nav-link" href="counter">
+                                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="/admin/index">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> index
+                            </NavLink>
+                        </li>*@
+
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="test">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Test
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="test2">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Test 2
+                            </NavLink>
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="ml-2">
+                    <p>
+                        <button class="btn btn-primary" @onclick="(() => Logout())">Logout </button>
+                        @context.User.Identity.Name
+                    </p>
+                </div>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <div class="card card-body bg-warning mx-5 my-5 text-center">
+                <div class="ml-5 ">
+                    Not Authorized, please
+                    <a href="login">Login</a>
+                </div>
+            </div>
+        </NotAuthorized>
+        <Authorizing>
+            <div class="ml-5 ">
+                <p>You should not see this!!!!</p>
+            </div>
+        </Authorizing>
+    </AuthorizeView>
+</nav>
+
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+
+    [Parameter]
+    public bool ShowFooter { get; set; }
+
+    private bool collapseNavMenu = true;
+    private string? NavBarCssClass => collapseNavMenu ? null : "show";
+    private string? NavButtonCssClass => collapseNavMenu ? "collapsed" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task Logout()
+    {
+        Log.Information("User logged out. Removing JWT.");
+        await _localStorageService.RemoveItemAsync("jwt_token");
+        _navManager.NavigateTo("login", true);
+    }
+
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    var authState = await authenticationState;
+    //    var user = authState.User;
+
+    //    if (user.Identity.IsAuthenticated)
+    //    {
+    //        //_navManager.NavigateTo("admin/index");
+    //    }
+
+    //}
+}
